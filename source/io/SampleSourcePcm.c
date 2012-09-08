@@ -74,7 +74,7 @@ static boolByte openSampleSourcePcm(void* sampleSourcePtr, const SampleSourceOpe
   return true;
 }
 
-static void _convertPcmDataToSampleBuffer(const short* inPcmSamples, SampleBuffer sampleBuffer) {
+static void _convertPcmDataToSampleBuffer(const short* inPcmSamples, SampleBuffer sampleBuffer, boolByte flipEndian) {
   int numInterlacedSamples = sampleBuffer->numChannels * sampleBuffer->blocksize;
   int currentInterlacedSample = 0;
   int currentDeinterlacedSample = 0;
@@ -90,7 +90,12 @@ static void _convertPcmDataToSampleBuffer(const short* inPcmSamples, SampleBuffe
         convertedSample = -1.0f;
       }
 #endif
-      sampleBuffer->samples[currentChannel][currentDeinterlacedSample] = convertedSample;
+      if(flipEndian) {
+        sampleBuffer->samples[currentChannel][currentDeinterlacedSample] = flipShortEndian(convertedSample);
+      }
+      else {
+        sampleBuffer->samples[currentChannel][currentDeinterlacedSample] = convertedSample;
+      }
     }
     currentDeinterlacedSample++;
   }
@@ -120,7 +125,7 @@ size_t readPcmDataFromFile(SampleSourcePcmData pcmData, SampleBuffer sampleBuffe
   }
   logDebug("Read %d samples from PCM file", pcmSamplesRead);
 
-  _convertPcmDataToSampleBuffer(pcmData->interlacedPcmDataBuffer, sampleBuffer);
+  _convertPcmDataToSampleBuffer(pcmData->interlacedPcmDataBuffer, sampleBuffer, pcmData->isLittleEndian != isHostLittleEndian());
   return pcmSamplesRead;
 }
 
