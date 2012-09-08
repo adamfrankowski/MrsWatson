@@ -79,9 +79,18 @@ static void _convertPcmDataToSampleBuffer(const short* inPcmSamples, SampleBuffe
   int currentInterlacedSample = 0;
   int currentDeinterlacedSample = 0;
   int currentChannel;
+  short currentSample;
+  Sample convertedSample;
+
   while(currentInterlacedSample < numInterlacedSamples) {
     for(currentChannel = 0; currentChannel < sampleBuffer->numChannels; currentChannel++) {
-      Sample convertedSample = (Sample)inPcmSamples[currentInterlacedSample++] / 32767.0f;
+      if(flipEndian) {
+        currentSample = flipShortEndian(inPcmSamples[currentInterlacedSample++]);
+      }
+      else {
+        currentSample = inPcmSamples[currentInterlacedSample++];
+      }
+      convertedSample = (Sample)currentSample / 32767.0f;
 #if USE_BRICKWALL_LIMITER
       if(convertedSample > 1.0f) {
         convertedSample = 1.0f;
@@ -90,12 +99,7 @@ static void _convertPcmDataToSampleBuffer(const short* inPcmSamples, SampleBuffe
         convertedSample = -1.0f;
       }
 #endif
-      if(flipEndian) {
-        sampleBuffer->samples[currentChannel][currentDeinterlacedSample] = flipShortEndian(convertedSample);
-      }
-      else {
-        sampleBuffer->samples[currentChannel][currentDeinterlacedSample] = convertedSample;
-      }
+      sampleBuffer->samples[currentChannel][currentDeinterlacedSample] = convertedSample;
     }
     currentDeinterlacedSample++;
   }
