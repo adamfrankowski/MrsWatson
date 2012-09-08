@@ -39,7 +39,7 @@ RiffChunk newRiffChunk(void) {
   return chunk;
 }
 
-boolByte readNextChunk(FILE* fileHandle, RiffChunk outChunk, boolByte readData) {
+boolByte readNextChunk(FILE* fileHandle, RiffChunk outChunk, boolByte readData, boolByte isLittleEndian) {
   unsigned int itemsRead = 0;
   byte* chunkSize;
 
@@ -57,6 +57,16 @@ boolByte readNextChunk(FILE* fileHandle, RiffChunk outChunk, boolByte readData) 
       return false;
     }
     outChunk->size = convertByteArrayToUnsignedInt(chunkSize);
+
+    // TODO: Must replace!
+#if 0
+    if(isLittleEndian) {
+      outChunk->size = convertLittleEndianBytesToInt(chunkSize);
+    }
+    else {
+      outChunk->size = convertBigEndianBytesToInt(chunkSize);
+    }
+#endif
     free(chunkSize);
 
     if(outChunk->size > 0 && readData) {
