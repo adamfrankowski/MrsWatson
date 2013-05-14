@@ -74,6 +74,14 @@ TestCase newTestCase(char* name, char* filename, int lineNumber, TestCaseExecFun
   } \
 }
 
+#define assertUnsignedShortEquals(condition, expected) { \
+  unsigned short result = condition; \
+  if(result != expected) { \
+    fprintf(stderr, "Assertion failed at %s:%d. Expected %d, got %d. ", getFileBasename(__FILE__), __LINE__, expected, result); \
+    return 1; \
+  } \
+}
+
 #define TEST_FLOAT_TOLERANCE 0.01
 #define assertDoubleEquals(condition, expected, tolerance) { \
   double result = fabs(condition - expected); \

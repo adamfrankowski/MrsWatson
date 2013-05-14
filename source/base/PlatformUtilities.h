@@ -82,7 +82,7 @@ CharString getCurrentDirectory(void);
 boolByte isHost64Bit(void);
 boolByte isHostLittleEndian(void);
 
-short flipShortEndian(const short value);
+unsigned short flipShortEndian(const unsigned short value);
 unsigned short convertBigEndianShortToPlatform(const unsigned short value);
 unsigned int convertBigEndianIntToPlatform(const unsigned int value);
 unsigned int convertLittleEndianIntToPlatform(const unsigned int value);

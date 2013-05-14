@@ -57,6 +57,9 @@ static int _testIsHostLittleEndian(void) {
 }
 
 static int _testFlipShortEndian(void) {
+  unsigned short s = 0xbeef;
+  unsigned short r = flipShortEndian(s);
+  assertUnsignedShortEquals(0xefbe, r);
   return 0;
 }
 
@@ -93,7 +96,7 @@ TestSuite addPlatformUtilitiesTests(void) {
 
   addTest(testSuite, "IsHostLittleEndian", NULL); // _testIsHostLittleEndian);
 
-  addTest(testSuite, "FlipShortEndian", NULL); // _testFlipShortEndian);
+  addTest(testSuite, "FlipShortEndian", _testFlipShortEndian);
   addTest(testSuite, "ConvertBigEndianShortToPlatform", NULL); // _testConvertBigEndianShortToPlatform);
   addTest(testSuite, "ConvertBigEndianIntToPlatform", NULL); // _testConvertBigEndianIntToPlatform);
   addTest(testSuite, "ConvertLittleEndianIntToPlatform", NULL); // _testConvertLittleEndianIntToPlatform);
